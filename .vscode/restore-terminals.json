@@ -1,0 +1,31 @@
+{
+  "artificialDelayMilliseconds": 700,
+  "keepExistingTerminalsOpen": false,
+  "runOnStartup": true,
+  "terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "next server",
+          "commands": ["bun run dev"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "Prisma Studio",
+          "commands": ["bun run db:studio"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "Other commands",
+          "commands": ["bun run db:push"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+model User {
+    id        String   @id @default(cuid())
+    email     String   @unique
+    name      String
+    password  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    role      Role     @default(USER)
+    sessions  Session?
+}
+
+model Session {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    expiresAt DateTime
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String   @unique
+    role      Role
+
+    @@index([userId])
+}
+
+model Card {
+    id        String   @id @default(cuid())
+    title     String
+    Image     Image    @relation(fields: [imageId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    texts     Text[]
+    imageId   String   @unique
+
+    @@index([imageId])
+}
+
+model Image {
+    id    String @id @default(cuid())
+    x     Int
+    y     Int
+    width Int
+    image Bytes  @db.LongBlob
+    Card  Card?
+}
+
+model Text {
+    id        String   @id @default(cuid())
+    x         Int
+    y         Int
+    fontSize  Float
+    text      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    Card      Card?    @relation(fields: [cardId], references: [id])
+    cardId    String?
+
+    @@index([cardId])
+}
+
+model Lock {
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    title       String   @db.VarChar(3)
+    combination String   @db.VarChar(4)
+}
